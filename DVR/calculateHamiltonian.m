@@ -12,8 +12,9 @@ VX = V(eigval);
 VXorg = evec*(diag(VX))*evec'; %DVR
 
 pSquared = (meshgrid(1:m).^2)*(pi^2);
+pSquared_diagonalized = diag(diag(pSquared));
 
-KE = (pSquared)/(2*mass);
+KE = (pSquared_diagonalized)/(2*mass);
 %calculating KE for particle in a box
 
 H = KE + VXorg;
@@ -23,7 +24,7 @@ H = KE + VXorg;
 
 dx = 1.0/m;
 x = 0:dx:.999;
-%defining position space in order to project eigenstates back to position space
+%apparently this is unnecessary 
 
 psi = zeros(m);
 a = ((sqrt(2/L)*Hevec));
@@ -34,18 +35,21 @@ end
 %psi = sqrt(2/L)*sin(m*pi*x/L); 
 %Here, I followed an example where the quantity(sqrt(2/L)) was multiplied by the eigenvectors of the Hamiltonian. 
 
-E = psi.*Heigval;
+sorted_Heigval = sort(diag(Heigval));
+Heigval_diagonal_Matrix = diag(sorted_Heigval);
+E = psi.*Hevec;
 
 sortedE = sort(E);
 
 subplot(1,1,1);
 plot(x,VX,'r'); hold on; 
 
-for k=1:5
-   plot(x, Heigval(k,:),'b');
-   hold on;
-   
-   
-end
+ for k=1:17
+    plot(x, (sorted_Heigval(k,:))+(sortedE(k,:)),'b');
+    hold on;   
+ end
+ 
+ ylim([min(VX),2500]);
+
 end
 
